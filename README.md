@@ -1,24 +1,23 @@
 # prm-gp2gp-data-pipeline-infra
 
+## Setup
+
+These instructions assume you are using:
+- [aws-vault](https://github.com/99designs/aws-vault) to validate your aws credentials.
+- [dojo](https://github.com/kudulab/dojo) to provide an execution environment
+
 ## Applying terraform
 
 ### Enter the container:
 
-`dojo -identity-dir-outer=<your-dojo-identity-directory>`
-
-### Assume admin role:
-
-`aws eval $(aws-cli-assumerole -rmfa <role-arn> <mfa-code>)`
-
-### Validate that you assumed the correct role:
-
-`aws sts get-caller-identity`
+`aws-vault exec <profile-name> -- dojo`
 
 ### Invoke terraform
 
 ```
   export STACK=data-pipeline
   export ENVIRONMENT=dev
+  cd terraform
   terraform init -backend-config key=${ENVIRONMENT}/${STACK}/terraform.tfstate
   terraform apply -var environment=${ENVIRONMENT}
 ```
