@@ -7,7 +7,7 @@ pipelines:
       git:
         type: configrepo
     stages:
-      - build:
+      - validate:
           clean_workspace: true
           jobs:
             test:
@@ -19,3 +19,30 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-validate
+      - apply_dev:
+          clean_workspace: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - echo hellodev
+      - apply_prod:
+        clean_workspace: true
+        approval:
+          type: manual
+          allow_only_on_success: true
+        jobs:
+          apply:
+            resources:
+              - docker
+            tasks:
+              - exec:
+                  command: /bin/bash
+                  arguments:
+                    - -c
+                    - echo helloprod
