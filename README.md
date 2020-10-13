@@ -15,9 +15,6 @@ These instructions assume you are using:
 ### Invoke terraform
 
 ```
-  export STACK=data-pipeline
-  export ENVIRONMENT=dev
-  cd terraform
-  terraform init -backend-config key=${ENVIRONMENT}/${STACK}/terraform.tfstate
-  terraform apply -var environment=${ENVIRONMENT}
+  ./tasks validate
+  ./tasks plan
 ```

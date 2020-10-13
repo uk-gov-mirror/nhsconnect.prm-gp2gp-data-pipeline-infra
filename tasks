@@ -1,11 +1,14 @@
 #!/bin/bash
 
 set -Eeo pipefail
-ENVIRONMENT=dev
-STACK=data-pipeline
+
+stack_env=dev
+stack_name=data-pipeline
+tf_dir=terraform
 
 function tf_init {
-    terraform init -backend-config key=${ENVIRONMENT}/${STACK}/terraform.tfstate
+    directory=$1
+    terraform init -backend-config key=${stack_env}/${stack_name}/terraform.tfstate ${directory}
 }
 
 for command in "$@"
@@ -13,17 +16,15 @@ do
     echo "--- ${command} ---"
     case "${command}" in
         validate)
-            cd terraform
-            tf_init
-            terraform validate
+            tf_init ${tf_dir}
+            terraform validate ${tf_dir}
         ;;
         dojo-validate)
             dojo "./tasks validate"
         ;;
         plan)
-            cd terraform
-            tf_init
-            terraform plan -out=dev.tfplan
+            tf_init ${tf_dir}
+            terraform plan -var environment=${stack_env} -out=dev.tfplan ${tf_dir}
         ;;
         dojo-plan)
             dojo "./tasks plan"
