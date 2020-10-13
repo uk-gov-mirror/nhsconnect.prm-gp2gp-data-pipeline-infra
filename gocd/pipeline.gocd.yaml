@@ -19,6 +19,18 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-validate
+      - plan_dev:
+          clean_workspace: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-plan
       - apply_dev:
           clean_workspace: true
           jobs:
@@ -45,4 +57,4 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks print-test
+                      - echo helloprod
