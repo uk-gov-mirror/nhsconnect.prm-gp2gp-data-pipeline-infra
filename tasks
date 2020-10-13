@@ -9,14 +9,17 @@ do
   echo "--- ${command} ---"
   case "${command}" in
       validate)
-      cd terraform
-      terraform init -backend-config key=${ENVIRONMENT}/${STACK}/terraform.tfstate
-      terraform validate
-      ;;
+          cd terraform
+          terraform init -backend-config key=${ENVIRONMENT}/${STACK}/terraform.tfstate
+          terraform validate
+          ;;
+      dojo-validate)
+          dojo "./tasks validate"
+          ;;
       *)
-        echo "Invalid command: '${command}'"
-        exit 1
-        ;;
+          echo "Invalid command: '${command}'"
+          exit 1
+          ;;
   esac
 done
 
