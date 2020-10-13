@@ -32,17 +32,17 @@ pipelines:
                       - -c
                       - echo hellodev
       - apply_prod:
-        clean_workspace: true
-        approval:
-          type: manual
-          allow_only_on_success: true
-        jobs:
-          apply:
-            resources:
-              - docker
-            tasks:
-              - exec:
-                  command: /bin/bash
-                  arguments:
-                    - -c
-                    - echo helloprod
+          clean_workspace: true
+          approval:
+            type: manual
+            allow_only_on_success: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - echo helloprod
