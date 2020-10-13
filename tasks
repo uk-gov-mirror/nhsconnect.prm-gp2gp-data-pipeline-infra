@@ -14,7 +14,7 @@ do
           terraform validate
           ;;
       print-test)
-          echo "mango"
+          echo "apple"
           ;;
       dojo-validate)
           dojo "./tasks validate"
