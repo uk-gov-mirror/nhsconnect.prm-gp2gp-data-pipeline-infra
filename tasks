@@ -13,6 +13,9 @@ do
           terraform init -backend-config key=${ENVIRONMENT}/${STACK}/terraform.tfstate
           terraform validate
           ;;
+      print-test)
+          echo "mango"
+          ;;
       dojo-validate)
           dojo "./tasks validate"
           ;;

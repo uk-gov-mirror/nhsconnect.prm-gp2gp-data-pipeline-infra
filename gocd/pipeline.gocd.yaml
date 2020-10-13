@@ -45,4 +45,4 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - echo helloprod
+                      - ./tasks print-test
