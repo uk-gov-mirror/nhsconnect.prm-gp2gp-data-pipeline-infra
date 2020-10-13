@@ -26,7 +26,7 @@ pipelines:
               resources:
                 - docker
               artifacts:
-                - plan:
+                - build:
                     source: /terraform/dev.tfplan
               tasks:
                 - exec:
@@ -44,7 +44,7 @@ pipelines:
                 - fetch:
                     stage: plan_dev
                     job: apply
-                    source: plan
+                    source: build
                 - exec:
                     command: /bin/bash
                     arguments:
