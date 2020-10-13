@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -Eeo pipefail
+ENVIRONMENT=dev
+STACK=data-pipeline
+
+for command in "$@"
+do
+  echo "--- ${command} ---"
+  case "${command}" in
+      validate)
+      cd terraform
+      terraform init -backend-config key=${ENVIRONMENT}/${STACK}/terraform.tfstate
+      terraform validate
+      ;;
+      *)
+        echo "Invalid command: '${command}'"
+        exit 1
+        ;;
+  esac
+done
+
+set +e
