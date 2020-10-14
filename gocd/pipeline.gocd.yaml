@@ -33,7 +33,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - -./tasks dojo-plan dev
+                      - ./tasks dojo-plan dev
       - apply_dev:
           clean_workspace: true
           jobs:
