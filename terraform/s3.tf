@@ -3,7 +3,10 @@ resource "aws_s3_bucket" "dashboard_data" {
   acl    = "private"
 
   tags = {
-    Name = "GP2GP service dashboard data"
+    Name        = "GP2GP service dashboard data"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+    Team        = var.team
   }
 }
 
