@@ -29,6 +29,13 @@ do
         dojo-plan)
             dojo "./tasks plan"
         ;;
+        apply)
+            tf_init ${tf_dir}
+            terraform apply dev.tfplan
+        ;;
+        dojo-apply)
+            dojo "./tasks apply"
+        ;;
         *)
             echo "Invalid command: '${command}'"
             exit 1
