@@ -22,12 +22,12 @@ pipelines:
       - plan_dev:
           clean_workspace: true
           jobs:
-            apply:
+            plan:
               resources:
                 - docker
               artifacts:
                 - build:
-                    source: /terraform/dev.tfplan
+                    source: dev.tfplan
               tasks:
                 - exec:
                     command: /bin/bash
@@ -41,15 +41,11 @@ pipelines:
               resources:
                 - docker
               tasks:
-                - fetch:
-                    stage: plan_dev
-                    job: apply
-                    source: build
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - echo hellodev
+                      - ls
       - apply_prod:
           clean_workspace: true
           approval:
