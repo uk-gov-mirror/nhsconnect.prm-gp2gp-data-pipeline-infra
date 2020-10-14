@@ -40,11 +40,11 @@ pipelines:
             apply:
               resources:
                 - docker
-              fetch:
-                stage: plan_dev
-                job: plan
-                source: build
               tasks:
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: build
                 - exec:
                     command: /bin/bash
                     arguments:
