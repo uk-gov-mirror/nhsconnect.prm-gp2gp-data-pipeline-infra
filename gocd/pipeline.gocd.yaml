@@ -44,7 +44,7 @@ pipelines:
                 - fetch:
                     stage: plan_dev
                     job: plan
-                    source: build
+                    source: dev.tfplan
                 - exec:
                     command: /bin/bash
                     arguments:
