@@ -45,6 +45,7 @@ pipelines:
                     stage: plan_dev
                     job: plan
                     source: dev.tfplan
+                    is_file: yes
                 - exec:
                     command: /bin/bash
                     arguments:
