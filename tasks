@@ -36,7 +36,7 @@ case "${task}" in
         dojo "./tasks plan ${stack_env}"
     ;;
     apply)
-        tf_init ${tf_dir}
+        tf_init ${tf_dir} ${stack_env}
         terraform apply ${stack_env}.tfplan
     ;;
     dojo-apply)
