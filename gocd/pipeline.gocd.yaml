@@ -18,7 +18,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-validate
+                      - ./tasks dojo-validate dev
       - plan_dev:
           clean_workspace: true
           jobs:
@@ -33,7 +33,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan
+                      - -/tasks dojo-plan dev
       - apply_dev:
           clean_workspace: true
           jobs:
@@ -50,7 +50,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-apply
+                      - ./tasks dojo-apply dev
       - apply_prod:
           clean_workspace: true
           approval:
