@@ -51,6 +51,21 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-apply dev
+      - plan_prod:
+          clean_workspace: true
+          jobs:
+            plan:
+              resources:
+                - docker
+              artifacts:
+                - build:
+                    source: prod.tfplan
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-plan prod
       - apply_prod:
           clean_workspace: true
           approval:
@@ -61,8 +76,13 @@ pipelines:
               resources:
                 - docker
               tasks:
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: prod.tfplan
+                    is_file: yes
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - echo helloprod
+                      - ./tasks dojo-apply prod
