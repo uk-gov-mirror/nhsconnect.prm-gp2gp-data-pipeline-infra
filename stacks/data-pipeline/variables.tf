@@ -14,3 +14,9 @@ variable "repo_name" {
   default     = "prm-gp2gp-data-pipeline-infra"
   description = "Name of this repository"
 }
+
+variable "region" {
+  type        = string
+  description = "AWS region."
+  default     = "eu-west-2"
+}
