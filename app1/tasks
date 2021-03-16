@@ -1,0 +1,45 @@
+#!/bin/bash
+
+set -Eeo pipefail
+
+aws_region=eu-west-2
+image_repo_name=registrations/data-wordcount-example
+
+function docker_login {
+  dojo -c Dojofile-infra "aws ecr get-login --no-include-email --region $aws_region"
+}
+
+function get_aws_account_id {
+  dojo -c Dojofile-infra "aws sts get-caller-identity --query Account --output text"
+}
+
+for command in "$@"
+do
+  echo "--- ${command} ---"
+  case "${command}" in
+    clean)
+        find ./src -type f -name "*.pyc" -delete
+        find ./src -type d -name "__pycache__" -delete
+        find ./src -type f -path "*.egg-info*" -delete
+        find ./src -type d -path "*.egg-info" -delete
+        rm -rf build/ dist/ .pytest_cache/
+        ;;
+    publish-docker)
+        if [ -z $IMAGE_TAG ]; then
+            echo "Please set IMAGE_TAG environment variable"
+            exit 1
+        fi
+        aws_account_id=$(get_aws_account_id)
+        repository_uri=${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com/${image_repo_name}
+        docker build -t ${repository_uri}:latest -t ${repository_uri}:${IMAGE_TAG} .
+        eval $(docker_login)
+        docker push ${repository_uri}:${IMAGE_TAG}
+    ;;
+    *)
+        echo "Invalid command: '${command}'"
+        exit 1
+        ;;
+  esac
+done
+
+set +e
