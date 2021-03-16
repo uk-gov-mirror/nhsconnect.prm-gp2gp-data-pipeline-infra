@@ -20,3 +20,22 @@ variable "region" {
   description = "AWS region."
   default     = "eu-west-2"
 }
+
+variable "vpc_cidr" {
+  type        = string
+  description = "CIDR block to assign VPC"
+  default     = "10.55.0.0/16"
+}
+
+variable "wordcount_repo_name" {
+  type        = string
+  description = "Docker repository of wordcount"
+  default     = "registrations/data-wordcount-example"
+}
+
+variable "wordcount_image_tag" {
+  type        = string
+  description = "Docker image tag of word count"
+  default     = "1"
+}
+

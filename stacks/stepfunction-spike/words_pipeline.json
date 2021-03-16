@@ -1,0 +1,28 @@
+{
+   "StartAt":"Manage ECS task",
+   "States":{
+      "Manage ECS task":{
+         "Type":"Task",
+         "Resource":"arn:aws:states:::ecs:runTask.waitForTaskToken",
+         "Parameters":{
+            "LaunchType":"FARGATE",
+            "Cluster":"cluster-arn",
+            "TaskDefinition":"job-id",
+            "Overrides":{
+               "ContainerOverrides":[
+                  {
+                     "Name":"container-name",
+                     "Environment":[
+                        {
+                           "Name":"TASK_TOKEN_ENV_VARIABLE",
+                           "Value.$":"$$.Task.Token"
+                        }
+                     ]
+                  }
+               ]
+            }
+         },
+         "End":true
+      }
+   }
+}
