@@ -39,3 +39,14 @@ variable "wordcount_image_tag" {
   default     = "1"
 }
 
+variable "findtoptenwords_repo_name" {
+  type        = string
+  description = "Docker repository of findtoptenwords"
+  default     = "registrations/data-findtoptenwords-example"
+}
+
+variable "findtoptenwords_image_tag" {
+  type        = string
+  description = "Docker image tag of findtoptenwords"
+  default     = "1"
+}

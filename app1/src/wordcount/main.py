@@ -14,8 +14,22 @@ logger = logging.getLogger(__name__)
 def main(config):
     s3 = boto3.resource('s3', endpoint_url=config.s3_endpoint_url)
 
+    logger.info("************ s3 endpoint url: ")
+    logger.info(config.s3_endpoint_url)
+
+    logger.info("************ input url: ")
+    logger.info(config.s3_input_url)
+
+    logger.info("************ output url: ")
+    logger.info(config.s3_output_url)
+
     input_object = s3_object(s3, config.s3_input_url)
     output_object = s3_object(s3, config.s3_output_url)
+
+    logger.info("************ input object: ")
+    logger.info(input_object)
+    logger.info("************ output object: ")
+    logger.info(output_object)
 
     input_data = download_string(input_object)
     words = word_count(input_data)
@@ -25,6 +39,8 @@ def main(config):
 
 def s3_object(s3, url_string):
     object_url = urlparse(url_string)
+    logger.info("************ object url : ")
+    logger.info(object_url)
     s3_bucket = object_url.netloc
     s3_key = object_url.path.lstrip("/")
     return s3.Object(s3_bucket, s3_key)

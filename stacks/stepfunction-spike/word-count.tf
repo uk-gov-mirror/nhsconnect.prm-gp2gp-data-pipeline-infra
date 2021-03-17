@@ -18,8 +18,8 @@ resource "aws_iam_policy" "ecs_execution" {
 }
 
 resource "aws_iam_role" "ecs_execution" {
-  name               = "${var.environment}-registrations-word-count-task"
-  description        = "ECS task role for launching word count"
+  name               = "${var.environment}-registrations-data-pipeline-task"
+  description        = "ECS task role for launching data pipeline task"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
 }
 
@@ -28,9 +28,15 @@ resource "aws_iam_role_policy_attachment" "ecs_execution" {
   policy_arn = aws_iam_policy.ecs_execution.arn
 }
 
-resource "aws_iam_role" "word_count" {
+resource "aws_iam_role_policy_attachment" "s3_bucket_access" {
+  role       = aws_iam_role.data_pipeline_task.name
+  policy_arn = aws_iam_policy.data_bucket_access.arn
+}
+
+
+resource "aws_iam_role" "data_pipeline_task" {
   name               = "${var.environment}-registrations-word-count"
-  description        = "Role for word count ECS task"
+  description        = "Role for data pipeline ECS task"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
 }
 
@@ -63,24 +69,24 @@ resource "aws_ecs_task_definition" "word_count" {
     }
   )
   execution_role_arn = aws_iam_role.ecs_execution.arn
-  task_role_arn      = aws_iam_role.word_count.arn
+  task_role_arn      = aws_iam_role.data_pipeline_task.arn
 }
 
-resource "aws_security_group" "word_count" {
-  name   = "${var.environment}-word-count"
+resource "aws_security_group" "data_pipeline" {
+  name   = "${var.environment}-data-pipeline"
   vpc_id = aws_vpc.vpc.id
 
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-word-count"
+      Name = "${var.environment}-data-pipeline"
     }
   )
 }
 
-resource "aws_security_group_rule" "word_count" {
+resource "aws_security_group_rule" "data_pipeline" {
   type              = "egress"
-  security_group_id = aws_security_group.word_count.id
+  security_group_id = aws_security_group.data_pipeline.id
   cidr_blocks = [
   "0.0.0.0/0"]
   from_port   = 0
@@ -108,7 +114,8 @@ data "aws_iam_policy_document" "ecs_execution" {
       "ecr:BatchGetImage"
     ]
     resources = [
-      data.aws_ecr_repository.word_count.arn
+      data.aws_ecr_repository.word_count.arn,
+      data.aws_ecr_repository.find_top_ten_words.arn
     ]
   }
 
@@ -119,7 +126,8 @@ data "aws_iam_policy_document" "ecs_execution" {
       "logs:PutLogEvents"
     ]
     resources = [
-      "${aws_cloudwatch_log_group.word_count.arn}:*"
+      "${aws_cloudwatch_log_group.word_count.arn}:*",
+      "${aws_cloudwatch_log_group.find_top_ten_words.arn}:*"
     ]
   }
 }
