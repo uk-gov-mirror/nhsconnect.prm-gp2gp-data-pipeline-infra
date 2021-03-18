@@ -30,13 +30,41 @@ resource "aws_sfn_state_machine" "sfn_state_machine" {
               }
             ]
           }
+        }
+        "Next" :"findtoptenwords",
+      },
+      "findtoptenwords" : {
+        "Type" : "Task",
+        "Resource" : "arn:aws:states:::ecs:runTask.sync",
+        "Parameters" : {
+          "LaunchType": "FARGATE",
+          "Cluster" : aws_ecs_cluster.data_pipeline.arn,
+          "TaskDefinition" : aws_ecs_task_definition.find_top_ten_words.arn,
+          "NetworkConfiguration" : { "AwsvpcConfiguration" : { "Subnets" : [aws_subnet.public.id], "SecurityGroups" : [
+            aws_security_group.data_pipeline.id], "AssignPublicIp" : "ENABLED" } },
+          "Overrides" : {
+            "ContainerOverrides" : [
+              {
+                Name : "findtoptenwords",
+                Environment : [
+                  {
+                    Name : "S3_INPUT_URL",
+                    Value : "s3://gp2gp-test-step-function-bucket/word-count-output/world-count-output"
+                  },
+                  {
+                    Name : "S3_OUTPUT_URL",
+                    Value : "s3://gp2gp-test-step-function-bucket/find-top-ten-words-output/find-top-ten-words-output"
+                  }
+                ]
+              }
+            ]
+          }
         },
         "End" : true
       }
     }
   })
 }
-
 
 resource "aws_iam_role" "iam_for_sfn" {
   name               = "${var.environment}-sfn"

@@ -10,6 +10,9 @@ from findtoptenwords.config import FindTopTenWords
 logger = logging.getLogger(__name__)
 
 def main(config):
+    logging.basicConfig(level=logging.INFO)
+    logger.info(f"input url is: {config.s3_input_url}" )
+    logger.info(f"output url is: {config.s3_output_url_url}" )
     s3 = boto3.resource('s3', endpoint_url=config.s3_endpoint_url)
 
     input_object = s3_object(s3, config.s3_input_url)

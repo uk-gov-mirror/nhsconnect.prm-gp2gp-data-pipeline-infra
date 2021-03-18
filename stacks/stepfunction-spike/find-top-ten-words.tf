@@ -16,7 +16,7 @@ resource "aws_ecs_task_definition" "find_top_ten_words" {
   family = "${var.environment}-find-top-ten-words"
   container_definitions = jsonencode([
     {
-      name      = "wordcount"
+      name      = "findtoptenwords"
       image     = "${data.aws_ecr_repository.find_top_ten_words.repository_url}:${var.findtoptenwords_image_tag}"
       essential = true
       logConfiguration = {
