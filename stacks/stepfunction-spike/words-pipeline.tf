@@ -7,6 +7,7 @@ resource "aws_sfn_state_machine" "sfn_state_machine" {
       "wordcount" : {
         "Type" : "Task",
         "Resource" : "arn:aws:states:::ecs:runTask.sync",
+        "ResultPath": null,
         "Parameters" : {
           "LaunchType": "FARGATE",
           "Cluster" : aws_ecs_cluster.data_pipeline.arn,
@@ -16,15 +17,15 @@ resource "aws_sfn_state_machine" "sfn_state_machine" {
           "Overrides" : {
             "ContainerOverrides" : [
               {
-                Name : "wordcount",
-                Environment : [
+                "Name" : "wordcount",
+                "Environment" : [
                   {
-                    Name : "S3_INPUT_URL",
-                    Value : "s3://gp2gp-test-step-function-bucket/word-count-input/word-count-input"
+                    "Name" : "S3_INPUT_URL",
+                    "Value.$" : "$.wordFileUrl"
                   },
                   {
-                    Name : "S3_OUTPUT_URL",
-                    Value : "s3://gp2gp-test-step-function-bucket/word-count-output/world-count-output"
+                    "Name" : "S3_OUTPUT_URL",
+                    "Value.$" : "$.countsFileUrl"
                   }
                 ]
               }
@@ -36,6 +37,7 @@ resource "aws_sfn_state_machine" "sfn_state_machine" {
       "findtoptenwords" : {
         "Type" : "Task",
         "Resource" : "arn:aws:states:::ecs:runTask.sync",
+        "ResultPath": null,
         "Parameters" : {
           "LaunchType": "FARGATE",
           "Cluster" : aws_ecs_cluster.data_pipeline.arn,
@@ -45,15 +47,15 @@ resource "aws_sfn_state_machine" "sfn_state_machine" {
           "Overrides" : {
             "ContainerOverrides" : [
               {
-                Name : "findtoptenwords",
-                Environment : [
+                "Name" : "findtoptenwords",
+                "Environment" : [
                   {
-                    Name : "S3_INPUT_URL",
-                    Value : "s3://gp2gp-test-step-function-bucket/word-count-output/world-count-output"
+                    "Name" : "S3_INPUT_URL",
+                    "Value.$" : "$.countsFileUrl"
                   },
                   {
-                    Name : "S3_OUTPUT_URL",
-                    Value : "s3://gp2gp-test-step-function-bucket/find-top-ten-words-output/find-top-ten-words-output"
+                    "Name" : "S3_OUTPUT_URL",
+                    "Value.$" : "$.topWordsFileUrl"
                   }
                 ]
               }
