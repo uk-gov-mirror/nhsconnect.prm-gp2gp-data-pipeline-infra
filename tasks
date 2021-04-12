@@ -2,22 +2,39 @@
 
 set -Eeo pipefail
 
-stack_name=data-pipeline
-tf_dir=terraform
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0 TASK STACK STACK-ENVIRONMENT"
+    exit 1
+fi
+
+aws_region="eu-west-2"
+state_lock_table="prm-gp2gp-terraform-table"
+state_bucket="prm-gp2gp-terraform-state"
+
+
+task="$1"
+stack_name="$2"
+stack_env="$3"
+tf_dir=stacks/${stack_name}
+export TF_DATA_DIR=.terraform/${stack_name}
+
+if [[ -v TF_PLUGIN_CACHE_DIR ]]; then
+    mkdir -p $TF_PLUGIN_CACHE_DIR
+fi
 
 function tf_init {
     directory=$1
     stack_env=$2
-    terraform init -backend-config key=${stack_env}/${stack_name}/terraform.tfstate ${directory}
+
+    s3_state_key=${stack_env}/${stack_name}/terraform.tfstate
+
+    terraform init \
+        -backend-config key=${s3_state_key} \
+        -backend-config bucket=${state_bucket} \
+        -backend-config dynamodb_table=${state_lock_table} \
+        -backend-config region=${aws_region} \
+        ${tf_dir}
 }
-
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 TASK STACK-ENVIRONMENT"
-    exit 1
-fi
-
-task="$1"
-stack_env="$2"
 
 echo "--- ${task} ---"
 case "${task}" in
@@ -26,21 +43,22 @@ case "${task}" in
         terraform validate ${tf_dir}
     ;;
     dojo-validate)
-        dojo "./tasks validate ${stack_env}"
+        dojo "./tasks validate ${stack_name} ${stack_env}"
     ;;
     plan)
         tf_init ${tf_dir} ${stack_env}
-        terraform plan -var environment=${stack_env} -out=${stack_env}.tfplan ${tf_dir}
+        terraform plan -var environment=${stack_env} \
+            -out=${stack_env}.tfplan ${tf_dir}
     ;;
     dojo-plan)
-        dojo "./tasks plan ${stack_env}"
+        dojo "./tasks plan ${stack_name} ${stack_env}"
     ;;
     apply)
         tf_init ${tf_dir} ${stack_env}
         terraform apply ${stack_env}.tfplan
     ;;
     dojo-apply)
-        dojo "./tasks apply ${stack_env}"
+        dojo "./tasks apply ${stack_name} ${stack_env}"
     ;;
     *)
         echo "Invalid task: '${task}'"
