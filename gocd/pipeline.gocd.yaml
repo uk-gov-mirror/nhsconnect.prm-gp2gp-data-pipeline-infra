@@ -18,7 +18,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-validate data-pipeline dev
+                      - ./tasks dojo-validate data-pipeline common_dev
       - plan_dev:
           clean_workspace: true
           jobs:
@@ -27,13 +27,13 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: dev.tfplan
+                    source: common_dev.tfplan
               tasks:
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan data-pipeline dev
+                      - ./tasks dojo-plan data-pipeline common_dev
       - apply_dev:
           clean_workspace: true
           jobs:
@@ -44,13 +44,13 @@ pipelines:
                 - fetch:
                     stage: plan_dev
                     job: plan
-                    source: dev.tfplan
+                    source: common_dev.tfplan
                     is_file: yes
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-apply data-pipeline dev
+                      - ./tasks dojo-apply data-pipeline common_dev
       - plan_prod:
           clean_workspace: true
           jobs:
@@ -59,13 +59,13 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: prod.tfplan
+                    source: common_prod.tfplan
               tasks:
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan data-pipeline prod
+                      - ./tasks dojo-plan data-pipeline common_prod
       - apply_prod:
           clean_workspace: true
           approval:
@@ -79,10 +79,10 @@ pipelines:
                 - fetch:
                     stage: plan_prod
                     job: plan
-                    source: prod.tfplan
+                    source: common_prod.tfplan
                     is_file: yes
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-apply data-pipeline prod
+                      - ./tasks dojo-apply data-pipeline common_prod
