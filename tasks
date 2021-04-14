@@ -10,6 +10,7 @@ fi
 task="$1"
 stack_name="$2"
 stack_env="$3"
+state_region="eu-west-2"
 tf_dir=stacks/${stack_name}
 env_name=$(jq -r .${stack_env}.name environment.json)
 
@@ -30,6 +31,7 @@ function tf_init() {
     -backend-config key=${s3_state_key} \
     -backend-config bucket=${state_bucket} \
     -backend-config dynamodb_table=${state_lock_table} \
+    -backend-config region=${state_region} \
     ${tf_dir}
 }
 
