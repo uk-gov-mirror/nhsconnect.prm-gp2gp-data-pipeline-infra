@@ -14,12 +14,14 @@
   "dev": {
     "name": "dev",
     "bucket_name": "prm-gp2gp-terraform-state-dev",
-    "dynamo_table": "prm-gp2gp-terraform-table"
+    "dynamo_table": "prm-gp2gp-terraform-table",
+    "role_arn_param" : "/registrations/dev/user-input/cross-account-admin-role"
   },
-  "prod": {
-    "name": "prod",
-    "bucket_name": "prm-gp2gp-terraform-state-prod",
-    "dynamo_table": "prm-gp2gp-terraform-table"
+  "preprod": {
+    "name": "preprod",
+    "bucket_name": "prm-gp2gp-terraform-state-preprod",
+    "dynamo_table": "prm-gp2gp-terraform-table",
+    "role_arn_param" : "/registrations/preprod/user-input/cross-account-admin-role"
   }
 }
 

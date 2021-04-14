@@ -13,11 +13,29 @@ stack_env="$3"
 state_region="eu-west-2"
 tf_dir=stacks/${stack_name}
 env_name=$(jq -r .${stack_env}.name environment.json)
+state_lock_table=$(jq -r .${stack_env}.dynamo_table environment.json)
+state_bucket=$(jq -r .${stack_env}.bucket_name environment.json)
+s3_state_key=$(jq -r .${stack_env}.state_key_prefix environment.json)${stack_name}/terraform.tfstate
 
-function set_config() {
-    state_lock_table=$(jq -r .${stack_env}.dynamo_table environment.json)
-    state_bucket=$(jq -r .${stack_env}.bucket_name environment.json)
-    s3_state_key=$(jq -r .${stack_env}.state_key_prefix environment.json)${stack_name}/terraform.tfstate
+function assume_role() {
+  role_arn_param=$(jq -r .${stack_env}.role_arn_param environment.json)
+  if [ "$role_arn_param" != "null" ]; then
+
+    role_arn=$(aws ssm get-parameters --region ${state_region} --names ${role_arn_param} --query 'Parameters[0].Value' --output text)
+    session_name="registrations-dashboard-${env_name}-session"
+
+    sts=$(
+      aws sts assume-role \
+        --role-arn $role_arn \
+        --role-session-name $session_name \
+        --output json
+    )
+
+    export AWS_ACCESS_KEY_ID=$(echo $sts | jq -r .Credentials.AccessKeyId)
+    export AWS_SECRET_ACCESS_KEY=$(echo $sts | jq -r .Credentials.SecretAccessKey)
+    export AWS_SESSION_TOKEN=$(echo $sts | jq -r .Credentials.SessionToken)
+  fi
+
 }
 
 export TF_DATA_DIR=.terraform/${stack_name}
@@ -36,7 +54,7 @@ function tf_init() {
 }
 
 echo "--- ${task} ---"
-set_config
+assume_role
 case "${task}" in
 validate)
   tf_init
