@@ -18,5 +18,4 @@ variable "repo_name" {
 variable "vpc_cidr" {
   type        = string
   description = "CIDR block to assign VPC"
-  default     = "10.55.0.0/16"
 }
