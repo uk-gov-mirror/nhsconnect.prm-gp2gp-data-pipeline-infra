@@ -6,7 +6,7 @@ resource "aws_subnet" "public" {
   tags = merge(
   local.common_tags,
   {
-    Name = "${var.environment}-data-pipeline"
+    Name = "${var.environment}-data-pipeline-public"
   }
   )
 
@@ -17,7 +17,7 @@ resource "aws_route_table" "public" {
   tags = merge(
   local.common_tags,
   {
-    Name = "${var.environment}-data-pipeline"
+    Name = "${var.environment}-data-pipeline-public"
   }
   )
 }
@@ -33,3 +33,25 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
+resource "aws_nat_gateway" "nat_gateway" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public.id
+
+  tags = merge(
+  local.common_tags,
+  {
+    Name = "${var.environment}-data-pipeline"
+  }
+  )
+}
+
+resource "aws_eip" "nat" {
+  vpc = true
+
+  tags = merge(
+  local.common_tags,
+  {
+    Name = "${var.environment}-data-pipeline-nat"
+  }
+  )
+}
