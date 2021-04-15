@@ -51,3 +51,18 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-apply base-networking dev
+      - plan_prod:
+          clean_workspace: true
+          jobs:
+            plan:
+              resources:
+                - docker
+              artifacts:
+                - build:
+                    source: preprod.tfplan
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-plan base-networking preprod
