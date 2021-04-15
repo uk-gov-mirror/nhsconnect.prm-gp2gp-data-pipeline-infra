@@ -19,9 +19,7 @@ s3_state_key=$(jq -r .${stack_env}.state_key_prefix environment.json)${stack_nam
 
 function assume_role() {
   role_arn_param=$(jq -r .${stack_env}.role_arn_param environment.json)
-  echo "role arn param is ${role_arn_param}"
   if [ "$role_arn_param" != "null" ]; then
-    echo "caller identity is $(aws sts get-caller-identity --output text)"
     role_arn=$(aws ssm get-parameters --region ${state_region} --names ${role_arn_param} --query 'Parameters[0].Value' --output text)
     session_name="registrations-dashboard-${env_name}-session"
 
@@ -41,11 +39,8 @@ function assume_role() {
 
 export TF_DATA_DIR=.terraform/${stack_name}
 
-if [[ -v TF_PLUGIN_CACHE_DIR ]]; then
-  mkdir -p $TF_PLUGIN_CACHE_DIR
-fi
-
 function tf_init() {
+  assume_role
   terraform init \
     -backend-config key=${s3_state_key} \
     -backend-config bucket=${state_bucket} \
@@ -55,7 +50,6 @@ function tf_init() {
 }
 
 echo "--- ${task} ---"
-assume_role
 case "${task}" in
 validate)
   tf_init
