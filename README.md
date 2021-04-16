@@ -15,6 +15,7 @@ Rolling out terraform against each environment is managed by the GoCD pipeline. 
 
 `aws-vault exec <profile-name> -- dojo`
 
+
 2. Invoke terraform locally
 
 ```
