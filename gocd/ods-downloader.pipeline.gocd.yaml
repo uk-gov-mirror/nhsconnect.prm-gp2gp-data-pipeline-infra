@@ -1,0 +1,38 @@
+format_version: 4
+pipelines:
+  "prm-gp2gp-data-pipeline-ods-downloader-infra":
+    group: gp2gp
+    label_template: "${git[:8]}"
+    materials:
+      git:
+        type: configrepo
+        includes:
+          - stacks/ods-downloader/**/*
+    stages:
+      - validate:
+          clean_workspace: true
+          jobs:
+            test:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-validate ods-downloader dev
+      - plan_dev:
+          clean_workspace: true
+          jobs:
+            plan:
+              resources:
+                - docker
+              artifacts:
+                - build:
+                    source: dev.tfplan
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-plan ods-downloader dev
