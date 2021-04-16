@@ -1,11 +1,13 @@
 format_version: 4
 pipelines:
-  "prm-gp2gp-data-pipeline-cross-account":
+  "prm-gp2gp-data-pipeline-base-networking-infra":
     group: gp2gp
     label_template: "${git[:8]}"
     materials:
       git:
         type: configrepo
+        includes:
+          - stacks/base-networking/**/*
     stages:
       - validate:
           clean_workspace: true

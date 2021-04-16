@@ -19,7 +19,6 @@ resource "aws_internet_gateway" "internet_gateway" {
     Name = "${var.environment}-data-pipeline"
   }
   )
-
 }
 
 data "aws_availability_zones" "available" {

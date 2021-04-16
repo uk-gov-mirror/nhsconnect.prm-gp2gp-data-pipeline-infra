@@ -6,6 +6,8 @@ pipelines:
     materials:
       git:
         type: configrepo
+        includes:
+          - stacks/data-pipeline/**/*
     stages:
       - validate:
           clean_workspace: true
