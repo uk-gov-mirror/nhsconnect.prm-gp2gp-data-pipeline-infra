@@ -26,7 +26,7 @@ resource "aws_ecs_task_definition" "ods_downloader" {
         options = {
           awslogs-group         = data.aws_ssm_parameter.cloud_watch_log_group.value
           awslogs-region        = var.region
-          awslogs-stream-prefix = var.ods_downloader_image_tag
+          awslogs-stream-prefix = "ods-downloader/${var.ods_downloader_image_tag}"
         }
       }
     }
