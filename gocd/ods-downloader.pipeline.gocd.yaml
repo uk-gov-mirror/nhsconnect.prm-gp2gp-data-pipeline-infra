@@ -8,6 +8,9 @@ pipelines:
         type: configrepo
         includes:
           - stacks/ods-downloader/**/*
+      ods_downloader_image:
+        pipeline: prm-gp2gp-ods-downloader
+        stage: build_ods_downloader
     stages:
       - validate:
           clean_workspace: true
@@ -35,4 +38,4 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan ods-downloader dev
+                      - TF_VAR_image_id=$GO_DEPENDENCY_LABEL_ODS_DOWNLOADER_IMAGE ./tasks dojo-plan ods-downloader dev

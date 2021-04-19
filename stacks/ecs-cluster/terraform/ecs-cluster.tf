@@ -57,17 +57,17 @@ data "aws_iam_policy_document" "ecs_execution" {
     ]
   }
 
-//  statement {
-//    sid = "DownloadEcrImage"
-//    actions = [
-//      "ecr:BatchCheckLayerAvailability",
-//      "ecr:GetDownloadUrlForLayer",
-//      "ecr:BatchGetImage"
-//    ]
-//    resources = [
-//      data.aws_ecr_repository.mesh_s3_forwarder.arn
-//    ]
-//  }
+  statement {
+    sid = "DownloadEcrImage"
+    actions = [
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:BatchGetImage"
+    ]
+    resources = [
+      data.aws_ecr_repository.ods_downloader.arn
+    ]
+  }
 
   statement {
     sid = "CloudwatchLogs"
@@ -79,4 +79,12 @@ data "aws_iam_policy_document" "ecs_execution" {
       "${aws_cloudwatch_log_group.data_pipeline.arn}:*"
     ]
   }
+}
+
+data "aws_ecr_repository" "ods_downloader" {
+  name = data.aws_ssm_parameter.ods_downloader.value
+}
+
+data "aws_ssm_parameter" "ods_downloader" {
+  name = var.ods_downloader_repo_param_name
 }

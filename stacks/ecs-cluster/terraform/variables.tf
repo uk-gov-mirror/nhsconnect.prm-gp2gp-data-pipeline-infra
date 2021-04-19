@@ -15,3 +15,8 @@ variable "repo_name" {
   description = "Name of this repository"
 }
 
+variable "ods_downloader_repo_param_name" {
+  type        = string
+  description = "Docker repository of Ods Downloader"
+}
+

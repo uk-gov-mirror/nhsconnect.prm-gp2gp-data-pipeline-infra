@@ -15,13 +15,23 @@ variable "repo_name" {
   description = "Name of this repository"
 }
 
-variable "vpc_cidr" {
-  type = string
-  description = "CIDR block to assign VPC"
+variable "ods_downloader_repo_param_name" {
+  type        = string
+  description = "Docker repository of Ods Downloader"
 }
 
-variable "private_cidr_offset" {
-  type = number
-  description = "CIDR address offset to begin creating private subnets at"
-  default = 100
+variable "ods_downloader_image_tag" {
+  type        = string
+  description = "Docker image tag of Ods Downloader"
+}
+
+variable "log_group_param_name" {
+  type        = string
+  description = "Cloudwatch log group for data pipeline"
+}
+
+variable "region" {
+  type        = string
+  description = "AWS region."
+  default     = "eu-west-2"
 }
