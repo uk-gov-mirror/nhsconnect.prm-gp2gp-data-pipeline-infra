@@ -1,7 +1,7 @@
 format_version: 4
 pipelines:
-  "prm-gp2gp-data-pipeline-ods-downloader-infra":
-    group: gp2gp
+  "data-pipeline-ods-downloader-infra":
+    group: gp2gp-data-pipeline-infra
     label_template: "${git[:8]}"
     materials:
       git:

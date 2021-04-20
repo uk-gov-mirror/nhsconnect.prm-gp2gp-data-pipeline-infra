@@ -1,7 +1,7 @@
 format_version: 4
 pipelines:
-  "prm-gp2gp-data-ecs-cluster-infra":
-    group: gp2gp
+  "data-pipeline-ecs-cluster":
+    group: gp2gp-data-pipeline-infra
     label_template: "${git[:8]}"
     materials:
       git:
